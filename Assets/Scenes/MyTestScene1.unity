@@ -207,6 +207,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_uduinoController: {fileID: 132016607}
+  BrushAngle: 0
 --- !u!114 &132016607 stripped
 MonoBehaviour:
   m_PrefabParentObject: {fileID: 114023058375386772, guid: bb5e6aea88a650f4a8317e74940b0ea4,
@@ -359,19 +360,19 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 400002, guid: 75f5be5cb2c169041bc1d870e688a427, type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0.2588191
+      value: 0.25783423
       objectReference: {fileID: 0}
     - target: {fileID: 400002, guid: 75f5be5cb2c169041bc1d870e688a427, type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0
+      value: -0.084186025
       objectReference: {fileID: 0}
     - target: {fileID: 400002, guid: 75f5be5cb2c169041bc1d870e688a427, type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0.9659258
+      value: 0.9622502
       objectReference: {fileID: 0}
     - target: {fileID: 400002, guid: 75f5be5cb2c169041bc1d870e688a427, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0
+      value: 0.02255758
       objectReference: {fileID: 0}
     - target: {fileID: 400002, guid: 75f5be5cb2c169041bc1d870e688a427, type: 3}
       propertyPath: m_RootOrder
@@ -399,7 +400,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 400002, guid: 75f5be5cb2c169041bc1d870e688a427, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
+      value: 10
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 75f5be5cb2c169041bc1d870e688a427, type: 3}
@@ -429,14 +430,14 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 771080086}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: 0, y: 0.7071068, z: 0, w: 0.7071068}
   m_LocalPosition: {x: 0, y: 2, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 477035817}
   m_Father: {fileID: 0}
   m_RootOrder: 6
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 90, z: 0}
 --- !u!1 &1135154680
 GameObject:
   m_ObjectHideFlags: 0

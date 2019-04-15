@@ -367,8 +367,8 @@ MonoBehaviour:
   m_PersistentViewDataDictionary: {fileID: 0}
   m_TreeViewState:
     scrollPos: {x: 0, y: 0}
-    m_SelectedIDs: 442b0000
-    m_LastClickedID: 11076
+    m_SelectedIDs: 94fbffff
+    m_LastClickedID: -1132
     m_ExpandedIDs: 96fbffff00000000442b00004e2b0000
     m_RenameOverlay:
       m_UserAcceptedRename: 0
@@ -420,14 +420,14 @@ MonoBehaviour:
     height: 552
   m_PersistentViewDataDictionary: {fileID: 0}
   m_SceneLighting: 1
-  lastFramingTime: 28.4082576
+  lastFramingTime: 16.7978038
   m_2DMode: 0
   m_isRotationLocked: 0
   m_AudioPlay: 0
   m_Position:
-    m_Target: {x: 0, y: 0, z: 0}
+    m_Target: {x: 0.010690689, y: 0.4622867, z: 0.4187618}
     speed: 2
-    m_Value: {x: 0, y: 0, z: 0}
+    m_Value: {x: 0.010690689, y: 0.4622867, z: 0.4187618}
   m_RenderMode: 0
   m_ValidateTrueMetals: 0
   m_SceneViewState:
@@ -455,9 +455,9 @@ MonoBehaviour:
     speed: 2
     m_Value: {x: -0, y: 0, z: -0, w: -1}
   m_Size:
-    m_Target: 22
+    m_Target: 5.600236
     speed: 2
-    m_Value: 22
+    m_Value: 5.600236
   m_Ortho:
     m_Target: 1
     speed: 2

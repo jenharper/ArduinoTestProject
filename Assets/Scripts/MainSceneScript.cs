@@ -7,7 +7,8 @@ public class MainSceneScript : MonoBehaviour {
 
     private int counter = 0;
     public UduinoManager m_uduinoController;
-    public int PotentiometerReading;
+    public float BrushAngle;
+    private int PotentiometerReading;
 
     void Awake()
     {
@@ -35,7 +36,7 @@ public class MainSceneScript : MonoBehaviour {
             if (readingOK && temp >= 0 && temp < 1024)
             {
                 PotentiometerReading = temp;
-                Debug.Log("Potentiometer value = " + PotentiometerReading);
+               // Debug.Log("Potentiometer value = " + PotentiometerReading);
             }
             else
             {

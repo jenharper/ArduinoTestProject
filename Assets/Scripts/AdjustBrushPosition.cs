@@ -4,34 +4,64 @@ using UnityEngine;
 
 public class AdjustBrushPosition : MonoBehaviour {
 
-    float angleX = 0;
+    private float desiredAngle = 0;
+    private bool requestChange = false;
 
 	// Use this for initialization
 	void Start () {
       
         Debug.Log("Bonjour!  My initial position is " + transform.localEulerAngles.x + ", " + transform.localEulerAngles.y + ", " + transform.localEulerAngles.z);
-        angleX = transform.localEulerAngles.x;
+       
     }
 	
 	// Update is called once per frame
 	void Update () {
+
+        GameObject go = GameObject.Find("Main Camera");
+        MainSceneScript mainUdinoManager = go.GetComponent<MainSceneScript>();
+        float angle = mainUdinoManager.BrushAngle;
+
         if (Input.GetKeyDown(KeyCode.A))
         {
-            angleX += 10.0f;
-            transform.Rotate(10, 0, 0, Space.Self);
-            //transform.Rotation(10, 0, 0, Space.Self);
+            desiredAngle += 10.0f;
+            requestChange = true;           
         }
         if (Input.GetKeyDown(KeyCode.Q))
         {
-            angleX -= 10.0f;
-            transform.Rotate(-10, 0, 0, Space.Self);
+            desiredAngle -= 10.0f;
+            requestChange = true;
         }
         if (Input.GetKeyDown(KeyCode.C))
         {
-            transform.Rotate(-1*angleX, 0, 0, Space.Self);
-            angleX = 0f;
-            //transform.eulerAngles = new Vector3(angleX, 0, 0);
+            desiredAngle = 0f;
+            requestChange = true;        
+        }
+
+
+        if (requestChange)
+        {
+            requestChange = false;
+            desiredAngle = AngleZeroTo360(desiredAngle);
+
+         
+            transform.localEulerAngles = new Vector3(desiredAngle, transform.localEulerAngles.y, transform.localEulerAngles.z);
 
         }
+
+
+
+
+    }
+
+    private float AngleZeroTo360(float inputAngle)
+    {
+        float temp = inputAngle;
+        while (temp < 0)
+            temp += 360;
+
+        while (temp >= 360)
+            temp -= 360;
+
+        return temp;
     }
 }
