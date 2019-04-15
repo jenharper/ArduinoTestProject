@@ -208,6 +208,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_uduinoController: {fileID: 132016607}
   BrushAngle: 0
+  myBrushObject: {fileID: 477035816}
 --- !u!114 &132016607 stripped
 MonoBehaviour:
   m_PrefabParentObject: {fileID: 114023058375386772, guid: bb5e6aea88a650f4a8317e74940b0ea4,
@@ -306,7 +307,6 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 477035817}
-  - component: {fileID: 477035818}
   m_Layer: 0
   m_Name: BrushPivot
   m_TagString: Untagged
@@ -328,17 +328,6 @@ Transform:
   m_Father: {fileID: 771080087}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &477035818
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 477035816}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 978aaf319b8739247ae05c1b34a616ae, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1001 &682471439
 Prefab:
   m_ObjectHideFlags: 0
