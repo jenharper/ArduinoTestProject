@@ -7,6 +7,7 @@ public class MainSceneScript : MonoBehaviour {
 
     private int counter = 0;
     public UduinoManager m_uduinoController;
+    public int PotentiometerReading;
 
     void Awake()
     {
@@ -23,7 +24,30 @@ public class MainSceneScript : MonoBehaviour {
     //May want to move this to statemanage
     void OnDataReceived(string data, Uduino.UduinoDevice deviceName)
     {
-            Debug.Log(deviceName.lastRead  + " aka " + deviceName.identity + " said " + data);   
+        //    Debug.Log(deviceName.lastRead + " from " + deviceName.name  + " aka " + deviceName.identity + " said " + data);   
+
+        if (deviceName.name == "myBrushArduino")
+        {
+            int temp;
+            int indexOfExclamation = data.IndexOf('!');
+            string strippedString = data.Substring(0, indexOfExclamation);
+            bool readingOK = int.TryParse(strippedString, out temp);
+            if (readingOK && temp >= 0 && temp < 1024)
+            {
+                PotentiometerReading = temp;
+                Debug.Log("Potentiometer value = " + PotentiometerReading);
+            }
+            else
+            {
+                Debug.Log("Failed to parse value. " + strippedString);
+            }
+
+        }
+        else
+        {
+            Debug.Log("Message from unknown Arduino" + deviceName.name);
+        }
+           
     }
 
     // Update is called once per frame
