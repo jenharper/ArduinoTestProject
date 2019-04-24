@@ -15,7 +15,7 @@ Adafruit_StepperMotor *myMotor = AFMS.getStepper(200, 2);
 
 int currentState = 0; //0 = not running, 1=running, 2=sweep complete, 3=return to start, 4 = return to start complete, 5 = released, 6 = stuck
 int currentStrokeCounter = 0;
-int motorSpeed = 20;
+int motorSpeed = 40;
 int stepsPerCycle = 10;
 int incomingByte = 0;
 
@@ -25,8 +25,8 @@ int incomingByte = 0;
 const int sweepMax = 634;
 const int sweepMin = 371;
 const int sweepHoldPosition = 306;
-const int strokesToDo = 20;
-const int minimumDelay = 20; //in milliseconds
+const int strokesToDo = 22;
+const int minimumDelay = 10; //in milliseconds
 uint8_t sweepDirection = BACKWARD;
 
 void setup()
@@ -166,7 +166,7 @@ void progressStepper()
   }
   else
   {
-    myMotor->step(2, sweepDirection, INTERLEAVE);
+    myMotor->step(3, sweepDirection, DOUBLE);
   }
   
 }
