@@ -13,104 +13,106 @@ Adafruit_MotorShield AFMS = Adafruit_MotorShield();
 // to motor port #2 (M3 and M4)
 Adafruit_StepperMotor *myMotor = AFMS.getStepper(200, 2);
 
-int currentState = 0; //0 = not running, 1=running, 2=sweep complete, 3=return to start, 4 = return to start complete, 5 = stuck
+int currentState = 0; //0 = not running, 1=running, 2=sweep complete, 3=return to start, 4 = return to start complete, 5 = released, 6 = stuck
 int currentStrokeCounter = 0;
-int strokes = 10; // number of back and forth strokes in brushSequence
 int motorSpeed = 20;
 int stepsPerCycle = 10;
 int incomingByte = 0;
 
+//const int potArraySize = 6;
+//int potArray[potArraySize] = new int[6];
+
 const int sweepMax = 634;
 const int sweepMin = 371;
 const int sweepHoldPosition = 306;
-const int strokesToDo = 10;
+const int strokesToDo = 20;
+const int minimumDelay = 20; //in milliseconds
 uint8_t sweepDirection = BACKWARD;
 
 void setup()
 {
   
   Serial.begin(9600);
-    Serial.println("Starting setup!");
-//  uduino.addCommand("resetBrush", resetBrush);
-//  uduino.addCommand("brushSequence", brushSequence);
-//  uduino.addCommand("stroke", stroke);
-//  uduino.addCommand("strokeCycle", strokeCycle);
-//  uduino.addCommand("releaseMotor", releaseMotor);
-//  uduino.addCommand("setValues", setValues);
-//
+  Serial.println("Starting setup!");
+  uduino.addCommand("resetBrush", resetBrush);
+  uduino.addCommand("releaseMotor", releaseMotor);
+  uduino.addCommand("brushSequence", brushSequence);
+
     AFMS.begin();  // create with the default frequency 1.6KHz
     myMotor->setSpeed(motorSpeed);  
 }
 
 void loop()
 {
+    long time1 = micros();
     potentiometerValue = analogRead(potentiometerPin);
-//  uduino.update();
+    uduino.update();
 
-//  if (uduino.isConnected()) {
+    if (uduino.isConnected()) 
+    {
+      Serial.print(potentiometerValue);
+      Serial.println("!");
+    }
+
+//  if (Serial.available() > 0) 
+//  {
 //    Serial.print(potentiometerValue);
 //    Serial.println("!");
+//    
+//    String tempString = Serial.readString(); // read the incoming string:
+//    Serial.print("I received: ");
+//    Serial.println(tempString);
+//
+//    if (tempString == "b")
+//    {
+//        currentState = 0;
+//        Serial.println("Moving motor backward");
+//        long time1 = micros();
+//        myMotor->step(5, BACKWARD, INTERLEAVE);
+//        long time2 = micros();
+//        long delta = time2 - time1;
+//        potentiometerValue = analogRead(potentiometerPin);
+//        Serial.print(potentiometerValue);
+//        Serial.println("!");
+//        Serial.print(delta);
+//        Serial.println(" microseconds");
+//    }
+//    if (tempString == "f")
+//    {
+//        currentState = 0;
+//        Serial.println("Moving motor forward");
+//        long time1 = micros();
+//        myMotor->step(5, FORWARD, INTERLEAVE);
+//        long time2 = micros();
+//        long delta = time2 - time1;
+//        potentiometerValue = analogRead(potentiometerPin);
+//        Serial.print(potentiometerValue);
+//        Serial.println("!");
+//        Serial.print(delta);
+//        Serial.println(" microseconds");
+//    }
+//    if (tempString == "s")
+//    {
+//        Serial.println("Stopping");
+//        currentState = 0;
+//    }
+//    if (tempString == "g")
+//    {
+//        Serial.println("Starting");
+//        brushSequence ();
+//    }
+//    if (tempString == "r")
+//    {
+//        Serial.println("Returning");
+//        resetBrush ();
+//    }
+//    if (tempString == "c")
+//    {
+//        Serial.println("Releasing");
+//        releaseMotor ();
+//    }
+//   
 //  }
-
-  if (Serial.available() > 0) 
-  {
-    Serial.print(potentiometerValue);
-    Serial.println("!");
-    
-    String tempString = Serial.readString(); // read the incoming string:
-    Serial.print("I received: ");
-    Serial.println(tempString);
-
-    if (tempString == "b")
-    {
-        currentState = 0;
-        Serial.println("Moving motor backward");
-        long time1 = micros();
-        myMotor->step(5, BACKWARD, INTERLEAVE);
-        long time2 = micros();
-        long delta = time2 - time1;
-        potentiometerValue = analogRead(potentiometerPin);
-        Serial.print(potentiometerValue);
-        Serial.println("!");
-        Serial.print(delta);
-        Serial.println(" microseconds");
-    }
-    if (tempString == "f")
-    {
-        currentState = 0;
-        Serial.println("Moving motor forward");
-        long time1 = micros();
-        myMotor->step(5, FORWARD, INTERLEAVE);
-        long time2 = micros();
-        long delta = time2 - time1;
-        potentiometerValue = analogRead(potentiometerPin);
-        Serial.print(potentiometerValue);
-        Serial.println("!");
-        Serial.print(delta);
-        Serial.println(" microseconds");
-    }
-    if (tempString == "s")
-    {
-        Serial.println("Stopping");
-        currentState = 0;
-    }
-    if (tempString == "g")
-    {
-        Serial.println("Starting");
-        brushSequence ();
-    }
-    if (tempString == "r")
-    {
-        Serial.println("Returning");
-        returnToStart ();
-    }
-    if (tempString == "c")
-    {
-        Serial.println("Releasing");
-        releaseMotor ();
-    }
-   
-  }
 
 
   if (currentState == 1)
@@ -122,9 +124,16 @@ void loop()
       progressToStart();
   }
   
- 
+  long time2 = micros();
+  long deltaMilliseconds =  (time2 - time1)/1000; //delta in milliseconds instead of microseconds
   
-    delay(100); // Delay of your choice or to match Unity's Read Timout
+  if (deltaMilliseconds < minimumDelay)
+  {
+      unsigned long delayDiff = minimumDelay - deltaMilliseconds;
+      delay(delayDiff);
+  }
+  
+  // delay(10); // Delay of your choice or to match Unity's Read Timout
 }
 
 void progressStepper()
@@ -147,13 +156,17 @@ void progressStepper()
     }
   }
 
-  if (currentStrokeCounter > strokesToDo)
+  if (currentStrokeCounter >= strokesToDo)
   {
     currentState = 2;
+    if (uduino.isConnected()) 
+    {   
+      Serial.println("Strokes complete!");
+    }
   }
   else
   {
-    myMotor->step(1, sweepDirection, INTERLEAVE);
+    myMotor->step(2, sweepDirection, INTERLEAVE);
   }
   
 }
@@ -170,7 +183,7 @@ void progressToStart()
     }
 }
 
-void returnToStart ()
+void resetBrush ()
 {
     currentState = 3;
 }
@@ -184,7 +197,7 @@ void brushSequence () {
 
 // releases the motor so it stops generating heat
 void releaseMotor () {
-  currentState = 0;
+  currentState = 5;
    myMotor->release();
    if (uduino.isConnected()) {
     Serial.println("Stepper motor released!");

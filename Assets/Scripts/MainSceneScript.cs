@@ -40,16 +40,23 @@ public class MainSceneScript : MonoBehaviour
         {
             int temp;
             int indexOfExclamation = data.IndexOf('!');
-            string strippedString = data.Substring(0, indexOfExclamation);
-            bool readingOK = int.TryParse(strippedString, out temp);
-            if (readingOK && temp >= 0 && temp < 1024)
+            if (indexOfExclamation > 0)
             {
-                PotentiometerReading = temp;
-                // Debug.Log("Potentiometer value = " + PotentiometerReading);
+                string strippedString = data.Substring(0, indexOfExclamation);
+                bool readingOK = int.TryParse(strippedString, out temp);
+                if (readingOK && temp >= 0 && temp < 1024)
+                {
+                    PotentiometerReading = temp;
+                    // Debug.Log("Potentiometer value = " + PotentiometerReading);
+                }
+                else
+                {
+                    Debug.Log(data);
+                }
             }
             else
             {
-                Debug.Log("Failed to parse value. " + strippedString);
+                Debug.Log(data);
             }
 
         }
@@ -79,33 +86,26 @@ public class MainSceneScript : MonoBehaviour
         }
 
 
-        //if (Input.GetKeyDown(KeyCode.A))
-        //{
-        //    desiredAngle += 10.0f;
-        //    requestChange = true;
-        //}
-        //if (Input.GetKeyDown(KeyCode.Q))
-        //{
-        //    desiredAngle -= 10.0f;
-        //    requestChange = true;
-        //}
-        //if (Input.GetKeyDown(KeyCode.C))
-        //{
-        //    desiredAngle = 0f;
-        //    requestChange = true;
-        //}
+        if (Input.GetKeyDown(KeyCode.G))
+        {
+            Debug.Log("Started brush sequence");
+            m_uduinoController.sendCommand("brushSequence");
+           
+        }
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            Debug.Log("Resetting brush");
+            m_uduinoController.sendCommand("resetBrush");
+        
+        }
+        if (Input.GetKeyDown(KeyCode.C))
+        {
+            Debug.Log("Releasing the motor");
+            m_uduinoController.sendCommand("releaseMotor");
+        
+        }
 
 
-        //if (requestChange)
-        //{
-        //    requestChange = false;
-        //    desiredAngle = AngleZeroTo360(desiredAngle);
-
-        //    if (myBrushObject != null)
-        //    {
-        //        myBrushObject.transform.localEulerAngles = new Vector3(desiredAngle, myBrushObject.transform.localEulerAngles.y, myBrushObject.transform.localEulerAngles.z);
-        //    }
-        //}
 
     }
 

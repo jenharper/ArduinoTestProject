@@ -13,17 +13,19 @@ Adafruit_MotorShield AFMS = Adafruit_MotorShield();
 // to motor port #2 (M3 and M4)
 Adafruit_StepperMotor *myMotor = AFMS.getStepper(200, 2);
 
-int currentState = 0; //0 = not running, 1=running, 2=sweep complete, 3=return to start, 4 = return to start complete, 5 = stuck
+int currentState = 0; //0 = not running, 1=running, 2=sweep complete, 3=return to start, 4 = return to start complete, 5 = released, 6 = stuck
 int currentStrokeCounter = 0;
-int strokes = 10; // number of back and forth strokes in brushSequence
 int motorSpeed = 20;
 int stepsPerCycle = 10;
 int incomingByte = 0;
 
+//const int potArraySize = 6;
+//int potArray[potArraySize] = new int[6];
+
 const int sweepMax = 634;
 const int sweepMin = 371;
 const int sweepHoldPosition = 306;
-const int strokesToDo = 10;
+const int strokesToDo = 20;
 const int minimumDelay = 20; //in milliseconds
 uint8_t sweepDirection = BACKWARD;
 
@@ -157,7 +159,7 @@ void progressStepper()
     }
   }
 
-  if (currentStrokeCounter > strokesToDo)
+  if (currentStrokeCounter >= strokesToDo)
   {
     currentState = 2;
   }
@@ -194,7 +196,7 @@ void brushSequence () {
 
 // releases the motor so it stops generating heat
 void releaseMotor () {
-  currentState = 0;
+  currentState = 5;
    myMotor->release();
    if (uduino.isConnected()) {
     Serial.println("Stepper motor released!");
