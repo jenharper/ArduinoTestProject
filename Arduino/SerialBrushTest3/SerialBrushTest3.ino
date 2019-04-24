@@ -24,6 +24,7 @@ const int sweepMax = 634;
 const int sweepMin = 371;
 const int sweepHoldPosition = 306;
 const int strokesToDo = 10;
+const int minimumDelay = 20; //in milliseconds
 uint8_t sweepDirection = BACKWARD;
 
 void setup()
@@ -44,6 +45,7 @@ void setup()
 
 void loop()
 {
+    long time1 = micros();
     potentiometerValue = analogRead(potentiometerPin);
 //  uduino.update();
 
@@ -122,9 +124,17 @@ void loop()
       progressToStart();
   }
   
- 
+  long time2 = micros();
+  long deltaMilliseconds =  (time2 - time1)/1000; //delta in milliseconds instead of microseconds
   
-    delay(100); // Delay of your choice or to match Unity's Read Timout
+ 
+  if (deltaMilliseconds < minimumDelay)
+  {
+      unsigned long delayDiff = minimumDelay - deltaMilliseconds;
+      delay(delayDiff);
+  }
+  
+  // delay(10); // Delay of your choice or to match Unity's Read Timout
 }
 
 void progressStepper()
@@ -153,7 +163,7 @@ void progressStepper()
   }
   else
   {
-    myMotor->step(1, sweepDirection, INTERLEAVE);
+    myMotor->step(2, sweepDirection, INTERLEAVE);
   }
   
 }
