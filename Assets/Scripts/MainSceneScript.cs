@@ -36,34 +36,34 @@ public class MainSceneScript : MonoBehaviour
     {
         //    Debug.Log(deviceName.lastRead + " from " + deviceName.name  + " aka " + deviceName.identity + " said " + data);   
 
-        if (deviceName.name == "myBrushArduino")
+        if (deviceName.name == "SelfEmbodimentBrush")
         {
-            int temp;
             int indexOfExclamation = data.IndexOf('!');
-            if (indexOfExclamation > 0)
+            if ((data.Length > 3) && (indexOfExclamation > 2))
             {
-                string strippedString = data.Substring(0, indexOfExclamation);
-                bool readingOK = int.TryParse(strippedString, out temp);
-                if (readingOK && temp >= 0 && temp < 1024)
+                //P: indicates a potentiometer reading
+               
+                if ((data[0] == 'P') && (data[1] == ':'))
                 {
-                    PotentiometerReading = temp;
-                    // Debug.Log("Potentiometer value = " + PotentiometerReading);
-                }
-                else
-                {
-                    Debug.Log(data);
+                    int temp;
+                    string strippedString = data.Substring(2, indexOfExclamation-2);
+                    bool readingOK = int.TryParse(strippedString, out temp);
+                    if (readingOK && temp >= 0 && temp < 1024)
+                    {
+                        PotentiometerReading = temp;
+                        // Debug.Log("Potentiometer value = " + PotentiometerReading);
+                    }
                 }
             }
             else
             {
-                Debug.Log(data);
+                Debug.Log("Unknown message:" + data);
             }
 
         }
         else
         {
             Debug.Log("Message from unknown Arduino: " + deviceName.name + " on port " + deviceName.identity + ".");
-
         }
 
     }
@@ -86,16 +86,16 @@ public class MainSceneScript : MonoBehaviour
         }
 
 
-        if (Input.GetKeyDown(KeyCode.G))
+        if (Input.GetKeyDown(KeyCode.B))
         {
             Debug.Log("Started brush sequence");
-            m_uduinoController.sendCommand("brushSequence");
+            m_uduinoController.sendCommand("brush", 1, 734);
            
         }
-        if (Input.GetKeyDown(KeyCode.R))
+        if (Input.GetKeyDown(KeyCode.S))
         {
             Debug.Log("Resetting brush");
-            m_uduinoController.sendCommand("resetBrush");
+            m_uduinoController.sendCommand("brush", 0, 271);
         
         }
         if (Input.GetKeyDown(KeyCode.C))
