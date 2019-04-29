@@ -36,14 +36,12 @@ const int minimumDelay = 20; //in milliseconds
 
 
 void setup()
-{
-  
+{ 
   Serial.begin(9600);
   Serial.println("Starting setup!");
-//  uduino.addCommand("releaseMotor", releaseMotor);
-//  uduino.addCommand("brush", brush);
-//  uduino.addCommand("setValues", setValues);
-//  uduino.addCommand("debugLevel", stroke);
+  uduino.addCommand("releaseMotor", releaseMotor);
+  uduino.addCommand("brush", brush);
+  uduino.addCommand("setValues", setValues);
 
   AFMS.begin();  // create with the default frequency 1.6KHz
   myMotor->setSpeed(motorSpeed);  
@@ -51,41 +49,15 @@ void setup()
 
 
 void loop() {
-   long time1 = micros();
-    potentiometerValue = analogRead(potentiometerPin);
-//  uduino.update();
+  long time1 = micros();
+  potentiometerValue = analogRead(potentiometerPin);
+  uduino.update();
 
-//  if (uduino.isConnected()) {
-//    Serial.print(potentiometerValue);
-//    Serial.println("!");
-//  }
-
-  if (Serial.available() > 0) 
-  {
-    //Oddly enough, this method of printing is the most memory efficient.  
+  if (uduino.isConnected()) {
+   //Oddly enough, this method of printing is the most memory efficient.  
     Serial.print("P:");
     Serial.print(potentiometerValue);
     Serial.println("!");
-    
-    String tempString = Serial.readString(); // read the incoming string:
-    Serial.print("I received: ");
-    Serial.println(tempString);
-
-    if (tempString == "c")
-    {
-        Serial.println("Releasing");
-        releaseMotor ();
-    }
-    if (tempString == "b") //bigger
-    {
-      currentState = 2;
-      goalPosition = 734;
-    }
-    if (tempString == "s") //smaller
-    {
-      currentState = 1;
-      goalPosition = 271;
-    }
   }
 
   if ((currentState == 1) || (currentState == 2))
@@ -137,21 +109,17 @@ void progressStepper()
   
   if ((currentState == 1) && (potentiometerValue > goalPosition)) //decrease Potentiometer
   {
-         myMotor->step(2, FORWARD, INTERLEAVE);
+         myMotor->step(resolution, FORWARD, stepType);
   }
   else if ((currentState == 2) && (potentiometerValue < goalPosition)) //increase Potentiometer
   {
-         myMotor->step(2, BACKWARD, INTERLEAVE);
+         myMotor->step(resolution, BACKWARD, stepType);
   }
   else
   {
      currentState = 3; //pause due to completion of stroke    
      if (uduino.isConnected()) {
         Serial.println("B:complete!");
-     }
-     else
-     {
-        Serial.println("Stroke complete");
      }
   }
 
@@ -160,10 +128,88 @@ void progressStepper()
 
 // releases the motor so it stops generating heat
 void releaseMotor () {
-  currentState = 0;
+   currentState = 0;
    myMotor->release();
    if (uduino.isConnected()) {
-    Serial.println("Stepper motor released!");
+    Serial.println("B:released!");
   }
 }
+
+//Change the operation values
+void setValues() {
+ 
+  int parameters = uduino.getNumberOfParameters(); 
+  
+  if (parameters == 5) {
+    int requestSweepMax = uduino.charToInt(uduino.getParameter(0));
+    int requestSweepMin = uduino.charToInt(uduino.getParameter(1)); 
+    int requestResolution = uduino.charToInt(uduino.getParameter(2)); 
+    int requestStepType = uduino.charToInt(uduino.getParameter(3));
+    int requestSpeed = uduino.charToInt(uduino.getParameter(4));
+
+    if ((requestSweepMax > requestSweepMin) && (requestSweepMax <= sweepMaxHW) && (requestSweepMin >= sweepMinHW))
+    {
+       sweepMax = requestSweepMax;
+       sweepMin = requestSweepMin;
+       if (uduino.isConnected()) 
+       {
+          Serial.print("S:setting Max=");
+          Serial.print(sweepMax);
+          Serial.print(" Min=");
+          Serial.print(sweepMin);
+          Serial.println("!");
+        }
+    }
+
+    if ((requestResolution > 0) && (requestResolution <= 20))
+    {
+        resolution = requestResolution;
+        if (uduino.isConnected()) 
+        {
+          Serial.print("S:setting Resolution=");
+          Serial.print(resolution);
+          Serial.println("!");
+        }
+    }
+
+    if (requestStepType == SINGLE)
+    {
+      stepType = SINGLE;
+      if (uduino.isConnected()) 
+      {
+          Serial.print("S:setting stepType=SINGLE!");
+      }
+    }
+    else if (requestStepType == DOUBLE)
+     {
+      stepType = DOUBLE;
+      if (uduino.isConnected()) 
+      {
+          Serial.print("S:setting stepType=DOUBLE!");
+      }
+    }
+    else if (requestStepType == INTERLEAVE)
+    {
+      stepType = INTERLEAVE;
+      if (uduino.isConnected()) 
+      {
+          Serial.print("S:setting stepType=INTERLEAVE!");
+      }
+    }
+  
+    if ((requestSpeed >= 1) && (requestSpeed <= 100))
+    {
+        motorSpeed = requestSpeed;
+        myMotor->setSpeed(motorSpeed); 
+        if (uduino.isConnected()) 
+        {
+          Serial.print("S:setting motorSpeed=");
+          Serial.print(motorSpeed);
+          Serial.println("!");
+        }
+    }
+    
+  }
+}
+
 
